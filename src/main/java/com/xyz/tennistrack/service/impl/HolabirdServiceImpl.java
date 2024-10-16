@@ -140,23 +140,33 @@ public class HolabirdServiceImpl {
 
     private <T> Product<T> createProductEntity(HolabirdDTO.Items items, ProductType productType) {
 
-        Product<T> product = new Product.Builder<T>()
+        Product<Racquets> product = new Racquets.RacquetBuilder()
                 .retailer(Retailer.HOLABIRD)
                 .title(items.getTitle())
                 .price(items.getPrice())
-                .msrp(items.getList_price())
+                .list_price(items.getList_price())
                 .productType(productType)
                 .discount(items.getDiscount())
                 .brand(Brand.getBrandName(items.getVendor()))
-                .productUrl(items.getLink())
-                .imageUrl(items.getImage_link())
                 .build();
+
+//        Product<T> product = new Product.Builder<T>()
+//                .retailer(Retailer.HOLABIRD)
+//                .title(items.getTitle())
+//                .price(items.getPrice())
+//                .msrp(items.getList_price())
+//                .productType(productType)
+//                .discount(items.getDiscount())
+//                .brand(Brand.getBrandName(items.getVendor()))
+//                .productUrl(items.getLink())
+//                .imageUrl(items.getImage_link())
+//                .build();
 
 
         List<T> variants = createVariantEntity(items.getVariants(), productType);
-        product.setVariants(variants);
+        product.setVariants((List<Racquets>) variants);
 
-        return product;
+        return (Product<T>) product;
     }
 
 
@@ -171,8 +181,6 @@ public class HolabirdServiceImpl {
                         case RACQUETS -> {
                             Racquets racquet = new Racquets.RacquetBuilder()
                                     .racquet_id(e.getVariant_id())
-                                    .sku(e.getSku())
-                                    .barcode(e.getBarcode())
                                     .price(e.getPrice())
                                     .list_price(e.getList_price())
                                     .quantity_total(e.getQuantity_total())

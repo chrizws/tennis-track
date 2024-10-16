@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Product<T> {
+public abstract class Product<T> {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -153,9 +153,6 @@ public class Product<T> {
             return this;
         }
 
-        public Product<T> build() {
-            return new Product<T>(this);
-        }
     }
 
 
@@ -278,4 +275,6 @@ public class Product<T> {
     public void setProductType(ProductType productType) {
         this.productType = productType;
     }
+
+
 }

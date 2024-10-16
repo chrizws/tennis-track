@@ -1,19 +1,26 @@
 package com.xyz.tennistrack.model.tennisProducts;
 
+import com.xyz.tennistrack.dto.HolabirdDTO;
 import com.xyz.tennistrack.model.Product;
+import com.xyz.tennistrack.model.enums.Brand;
+import com.xyz.tennistrack.model.enums.ProductType;
+import com.xyz.tennistrack.model.enums.Retailer;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Racquets extends Product<Racquets>{
 
     private String racquet_id;
 
-    private String sku;
-    private String barcode;
+//    private String sku;
+//    private String barcode;
     private String price;
     private String list_price;
     private String quantity_total;
     private String link;
+
 
     @Embedded
     private Options options;
@@ -26,25 +33,77 @@ public class Racquets extends Product<Racquets>{
 
     public Racquets(RacquetBuilder builder) {
         this.racquet_id = builder.racquet_id;
-        this.sku = builder.sku;
-        this.barcode = builder.barcode;
+//        this.sku = builder.sku;
+//        this.barcode = builder.barcode;
         this.price = builder.price;
         this.list_price = builder.list_price;
         this.options = builder.options;
         this.quantity_total = builder.quantity_total;
         this.link = builder.link;
+
+        super.setRetailer(builder.retailer);
+        super.setTitle(builder.title);
+        super.setPrice(builder.price);
+        super.setMsrp(builder.list_price);
+        super.setDiscount(builder.discount);
+        super.setProductType(builder.productType);
+        super.setBrand(builder.brand);
+
+
     }
+
 
     public static class RacquetBuilder {
 
+        private String id;
         private String racquet_id;
-        private String sku;
-        private String barcode;
+//        private String sku;
+//        private String barcode;
         private String price;
         private String list_price;
         private Options options;
         private String quantity_total;
         private String link;
+        private Retailer retailer;
+
+
+        private String title;
+        private ProductType productType;
+        private Brand brand;
+        private String discount;
+
+        public RacquetBuilder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public RacquetBuilder retailer(Retailer retailer) {
+            this.retailer = retailer;
+            return this;
+        }
+
+        public RacquetBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+
+        public RacquetBuilder discount(String discount) {
+            this.discount = discount;
+            return this;
+        }
+        public RacquetBuilder productType(ProductType productType) {
+            this.productType = productType;
+            return this;
+        }
+        public RacquetBuilder brand(Brand brand) {
+            this.brand = brand;
+            return this;
+        }
+
+
+
+
 
 
 
@@ -52,14 +111,14 @@ public class Racquets extends Product<Racquets>{
             this.racquet_id = racquet_id;
             return this;
         }
-        public RacquetBuilder sku(String sku) {
-            this.sku = sku;
-            return this;
-        }
-        public RacquetBuilder barcode(String barcode) {
-            this.barcode = barcode;
-            return this;
-        }
+//        public RacquetBuilder sku(String sku) {
+//            this.sku = sku;
+//            return this;
+//        }
+//        public RacquetBuilder barcode(String barcode) {
+//            this.barcode = barcode;
+//            return this;
+//        }
         public RacquetBuilder price(String price) {
             this.price = price;
             return this;
@@ -115,21 +174,21 @@ public class Racquets extends Product<Racquets>{
         this.racquet_id = id;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
+//    public String getSku() {
+//        return sku;
+//    }
+//
+//    public void setSku(String sku) {
+//        this.sku = sku;
+//    }
+//
+//    public String getBarcode() {
+//        return barcode;
+//    }
+//
+//    public void setBarcode(String barcode) {
+//        this.barcode = barcode;
+//    }
 
     public String getPrice() {
         return price;

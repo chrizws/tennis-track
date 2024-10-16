@@ -125,7 +125,7 @@ public class HolabirdRepositoryTest {
         variant3.setTaxable("1");
         variant3.setAvailable("1");
         variant3.setQuantity_total("5");
-        variant3.setLink("\\/products\\/head-ti-s6?variant=12221276815454");
+        variant3.setLink("\\/products\\/wilson?variant=122212768214122");
 
         HolabirdDTO.Variants.Options options3 = new HolabirdDTO.Variants.Options();
         options3.setSize("2L - 4 1\\/4\\");
@@ -141,7 +141,7 @@ public class HolabirdRepositoryTest {
         variant4.setTaxable("1");
         variant4.setAvailable("1");
         variant4.setQuantity_total("6");
-        variant4.setLink("\\/products\\/head-ti-s6?variant=12221276848222");
+        variant4.setLink("\\/products\\/wilson?variant=122212768482342");
 
         HolabirdDTO.Variants.Options options4 = new HolabirdDTO.Variants.Options();
         options4.setSize("3L - 4 3\\/8\\");
@@ -173,36 +173,29 @@ public class HolabirdRepositoryTest {
                 case RACQUETS -> {
                     List<Racquets> variants = new ArrayList<>();
 
-                    Product<Racquets> product = new Product.Builder<Racquets>()
-                            .id(e.getProduct_id())
+                    Product<Racquets> product = new Racquets.RacquetBuilder()
                             .retailer(Retailer.HOLABIRD)
                             .title(e.getTitle())
                             .price(e.getPrice())
-                            .msrp(e.getList_price())
+                            .list_price(e.getList_price())
+                            .productType(dto.getType())
                             .discount(e.getDiscount())
-                            .productType(ProductType.RACQUETS)
                             .brand(Brand.getBrandName(e.getVendor()))
-                            .productUrl(e.getLink())
-                            .imageUrl(e.getImage_link())
-                            .quantity_total(e.getQuantity())
-                            .variants(variants)
                             .build();
 
-//                    products.add(product);
+                    product.setVariants(variants);
+                    product.setId(e.getProduct_id());
+                    product.setMsrp(e.getList_price());
 
                     e.getVariants().stream()
                             .forEach(f -> {
                                 Racquets racquets = new Racquets.RacquetBuilder()
                                         .racquet_id(f.getVariant_id())
-                                        .sku(f.getSku())
-                                        .barcode(f.getBarcode())
                                         .price(f.getPrice())
                                         .list_price(f.getList_price())
                                         .quantity_total(f.getQuantity_total())
                                         .link(f.getLink())
                                         .build();
-
-                                racquets.setRacquet_id(f.getVariant_id());
 
                                 Racquets.Options options = new Racquets.Options();
                                 options.setSize(f.getOptions().getSize());
