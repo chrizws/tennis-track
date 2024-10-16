@@ -305,14 +305,14 @@ public class ProductRepositoryTest {
                                 racquet.setOptions(options);
 
                                 variants.add((T) racquet);
-                                //racquetsRepository.save(racquet);
+                                racquetsRepository.save((Racquets)racquet);
                             });
                 }
             }
         });
 
         productRepository.saveAll(products);
-        racquetsRepository.saveAll((List<Racquets>)variants);
+        racquetsRepository.saveAll(variants);
 
         List<Product> productList = productRepository.findAll();
         List<Racquets> racquetList = racquetsRepository.findAll();

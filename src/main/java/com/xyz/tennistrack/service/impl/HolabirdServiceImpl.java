@@ -2,8 +2,13 @@ package com.xyz.tennistrack.service.impl;
 
 import com.xyz.tennistrack.config.UserAgents;
 import com.xyz.tennistrack.dto.HolabirdDTO;
+import com.xyz.tennistrack.model.Product;
+import com.xyz.tennistrack.model.enums.Brand;
 import com.xyz.tennistrack.model.enums.ProductType;
+import com.xyz.tennistrack.model.enums.Retailer;
+import com.xyz.tennistrack.model.tennisProducts.Racquets;
 import com.xyz.tennistrack.repository.ProductRepository;
+import com.xyz.tennistrack.repository.RacquetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,15 +22,17 @@ public class HolabirdServiceImpl {
 
     private final RestTemplate rt;
     private final ProductRepository productRepository;
+    private final RacquetRepository racquetRepository;
 
     @Value("${holabird.url}")
     private String url;
     private Map<ProductType, String> productTypes;
 
     @Autowired
-    public HolabirdServiceImpl(RestTemplate rt, ProductRepository productRepository) {
+    public HolabirdServiceImpl(RestTemplate rt, ProductRepository productRepository, RacquetRepository racquetRepository) {
         this.rt = rt;
         this.productRepository = productRepository;
+        this.racquetRepository = racquetRepository;
 
         //create a map of product types with associated categories
         productTypes = initProductTypes();
@@ -52,7 +59,6 @@ public class HolabirdServiceImpl {
         return productTypes;
     }
 
-    //create request headers
     private HttpEntity<String> getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         //headers.set("authority", "searchserverapi.com");
@@ -64,7 +70,6 @@ public class HolabirdServiceImpl {
         return new HttpEntity<>(headers);
     }
 
-    //create request parameters
     private Map<String, String> getRequestParams(ProductType type, int index) {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -79,126 +84,112 @@ public class HolabirdServiceImpl {
 
     }
 
+    private String createUrlWithParams(Map<String, String> params) {
+
+        String createParamUrl = url;
+
+        //build the custom url with the query parameters
+        for (String param : params.keySet()) {
+            createParamUrl += "&" + param + "=" + params.get(param);
+        }
+
+        return createParamUrl;
+    }
+
     //consume API to retrieve DTO
-//    public <T> HolabirdDTO getHolaBirdDTO() {
-//
-//        for (ProductType type : productTypes.keySet()) {
-//
-//            //build the custom url with the query parameters
-//            Map<String, String> params = getRequestParams(type, 0);
-//            for (String param : params.keySet()) {
-//                url += "&" + param + "=" + params.get(param);
-//            }
-//
-//            //ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, getHeaders(), String.class);
-//            //ParameterizedTypeReference<HolabirdDTO<Racquets>> responseType = new ParameterizedTypeReference<>() {};
-//            //ResponseEntity<HolabirdDTO<Racquets>> response = rt.exchange(url, HttpMethod.GET, getHeaders(), responseType);
-//            HolabirdDTO holabirdDTO = rt.exchange(url, HttpMethod.GET, getHeaders(), HolabirdDTO.class).getBody();
-//            holabirdDTO.setType(type);
-//
-//            List<Product<T>> products = createProductEntity(holabirdDTO);
-//            saveAllProducts(products);
-//
-//            return holabirdDTO;
-//        }
-//
-//        return null;
-//
-//    }
+    public <T> HolabirdDTO getHolaBirdDTO() {
 
-    //save all products
-//    private <T> void saveAllProducts(List<Product<T>> products) {
-//        holabirdRepository.saveAll(products);
-//    }
+        for (ProductType type : productTypes.keySet()) {
 
-    //get response
+            //build the custom url with the query parameters
+            String completeUrl = createUrlWithParams(getRequestParams(type, 0));
 
-//    public <T> List<Product<T>> createProductEntity(HolabirdDTO holabirdDTO) {
-//        List<Product<T>> products = new ArrayList<>();
-//
-//        holabirdDTO.getItems().stream()
-//                .forEach(e -> {
-//
-//                    Product<T> product = createProductEntity(e, holabirdDTO.getType());
-//                    //product.setQuantity_total(e.getQuantity_total());
-//
-//                        //case PICKLEBALL -> product = new Pickleball();
-//                        //case SHOES -> product = new Shoes();
-//                        //case BAGS -> product = new Bags();
-//                        //case ACCESSORIES -> product = new Accessories();
-//                        //case STRINGS -> product = new Strings();
-//                        //case EQUIPMENT -> product = new Equipment();
-//                    products.add(product);
-//                });
-//
-//        return products;
-//    }
-//
-//    private <T> Product<T> createProductEntity(HolabirdDTO.Items items, ProductType productType) {
-
-//        Product<Racquets> product = new Racquets.RacquetBuilder()
-//                .retailer(Retailer.HOLABIRD)
-//                .title(items.getTitle())
-//                .price(items.getPrice())
-//                .list_price(items.getList_price())
-//                .productType(productType)
-//                .discount(items.getDiscount())
-//                .brand(Brand.getBrandName(items.getVendor()))
-//                .build();
-
-//        Product<T> product = new Product.Builder<T>()
-//                .retailer(Retailer.HOLABIRD)
-//                .title(items.getTitle())
-//                .price(items.getPrice())
-//                .msrp(items.getList_price())
-//                .productType(productType)
-//                .discount(items.getDiscount())
-//                .brand(Brand.getBrandName(items.getVendor()))
-//                .productUrl(items.getLink())
-//                .imageUrl(items.getImage_link())
-//                .build();
+            //ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, getHeaders(), String.class);
+            //ParameterizedTypeReference<HolabirdDTO<Racquets>> responseType = new ParameterizedTypeReference<>() {};
+            //ResponseEntity<HolabirdDTO<Racquets>> response = rt.exchange(url, HttpMethod.GET, getHeaders(), responseType);
+            HolabirdDTO holabirdDTO = rt.exchange(completeUrl, HttpMethod.GET, getHeaders(), HolabirdDTO.class).getBody();
+            holabirdDTO.setType(type);
 
 
-//        List<T> variants = createVariantEntity(items.getVariants(), productType);
-//        product.setVariants((List<Racquets>) variants);
-//
-//        return (Product<T>) product;
-//
-//        return null;
-//    }
+            //create the data entity for persistence
+            List<Product> products = createDataEntity(holabirdDTO);
+            saveAllProducts(products);
+
+            return holabirdDTO;
+        }
+
+        return null;
+
+    }
+
+    private <T> void saveAllProducts(List<Product> products) {
+        productRepository.saveAll(products);
+    }
 
 
+    public <T> List<Product> createDataEntity(HolabirdDTO holabirdDTO) {
+        List<Product> products = new ArrayList<>();
 
-    private <T> List<T> createVariantEntity(List<HolabirdDTO.Variants> variants, ProductType type) {
+        holabirdDTO.getItems()
+                .forEach(e -> {
 
-//        List<T> variantsEntity = new ArrayList<>();
-//
-//        variants.stream()
-//                .forEach(e -> {
-//                    switch (type) {
-//                        case RACQUETS -> {
-//                            Racquets racquet = new Racquets.RacquetBuilder()
-//                                    .racquet_id(e.getVariant_id())
-//                                    .price(e.getPrice())
-//                                    .list_price(e.getList_price())
-//                                    .quantity_total(e.getQuantity_total())
-//                                    .link(e.getLink())
-//                                    .build();
-//
-//                            Racquets.Options options = new Racquets.Options();
-//                            options.setSize(e.getOptions().getSize());
-//
-//                            racquet.setOptions(options);
-//
-//                            variantsEntity.add((T) racquet);
-//                        }
-//
-//                    }
-//
-//
-//                });
-//        return variantsEntity;
+                    Product product = createProductEntity(e, holabirdDTO.getType());
+                    products.add(product);
 
+                    List<T> variants = new ArrayList<>();
+
+                    e.getVariants().forEach(f -> {
+
+                        variants.add(createVariantEntity(product, f, holabirdDTO.getType()));
+
+                        switch (holabirdDTO.getType()) {
+                            case RACQUETS -> {
+                                product.setRacquets((List<Racquets>) variants);
+                            }
+                        }
+                    });
+                });
+        return products;
+    }
+
+    private <T> Product createProductEntity(HolabirdDTO.Items item, ProductType productType) {
+
+        Product product = Product.builder()
+                .id(item.getProduct_id())
+                .retailer(Retailer.HOLABIRD)
+                .title(item.getTitle())
+                .price(item.getPrice())
+                .msrp(item.getList_price())
+                .discount(item.getDiscount())
+                .productType(productType)
+                .brand(Brand.getBrandName(item.getVendor()))
+                .build();
+
+        return product;
+
+    }
+
+
+    private <T> T createVariantEntity(Product product, HolabirdDTO.Variants e, ProductType type) {
+
+        switch (type) {
+            case RACQUETS -> {
+                Racquets racquet = Racquets.builder()
+                        .racquet_id(e.getVariant_id())
+                        .price(e.getPrice())
+                        .link(e.getLink())
+                        .list_price(e.getList_price())
+                        .quantity_total(e.getQuantity_total())
+                        .build();
+
+                Racquets.Options options = new Racquets.Options();
+                options.setSize(e.getOptions().getSize());
+
+                racquet.setOptions(options);
+
+                return (T) racquet;
+            }
+        };
         return null;
     }
 }
