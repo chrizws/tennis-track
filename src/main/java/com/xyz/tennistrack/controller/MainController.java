@@ -29,7 +29,8 @@ public class MainController {
     @GetMapping("/holabird")
     public HolabirdDTO getHolabird() {
 
-        return holabirdService.getHolaBirdDTO();
+        //return holabirdService.getHolaBirdDTO();
+        return null;
     }
 
 

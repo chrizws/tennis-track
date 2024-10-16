@@ -5,6 +5,7 @@ import com.xyz.tennistrack.model.Product;
 import com.xyz.tennistrack.model.enums.Brand;
 import com.xyz.tennistrack.model.enums.ProductType;
 import com.xyz.tennistrack.model.enums.Retailer;
+import com.xyz.tennistrack.model.tennisProducts.HolabirdVariants;
 import com.xyz.tennistrack.model.tennisProducts.Racquets;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @DataJpaTest
@@ -165,52 +167,92 @@ public class HolabirdRepositoryTest {
     @Test
     public void testHolabirdRepository_Save() {
 
-        List<Product<Racquets>> products = new ArrayList<>();
 
-        dto.getItems().stream().forEach(e -> {
+        Product<Racquets> product = new HolabirdVariants();
+        product.setId(dto.getItems().get(0).getProduct_id());
+        product.setRetailer(Retailer.HOLABIRD);
+        product.setTitle(dto.getItems().get(0).getTitle());
+        product.setProductType(ProductType.RACQUETS);
+        product.setPrice(dto.getItems().get(0).getPrice());
+        product.setMsrp(dto.getItems().get(0).getList_price());;
+        product.setDiscount(dto.getItems().get(0).getDiscount());
+        product.setBrand(Brand.getBrandName(dto.getItems().get(0).getVendor()));
 
-            switch (dto.getType()) {
-                case RACQUETS -> {
-                    List<Racquets> variants = new ArrayList<>();
+        ((HolabirdVariants) product).setVariant("this is a variant");
 
-                    Product<Racquets> product = new Racquets.RacquetBuilder()
-                            .retailer(Retailer.HOLABIRD)
-                            .title(e.getTitle())
-                            .price(e.getPrice())
-                            .list_price(e.getList_price())
-                            .productType(dto.getType())
-                            .discount(e.getDiscount())
-                            .brand(Brand.getBrandName(e.getVendor()))
+            Racquets racquets1 = new Racquets.RacquetBuilder()
+                    .racquet_id(dto.getItems().get(0).getVariants().get(0).getVariant_id())
+                            .list_price(dto.getItems().get(0).getVariants().get(0).getList_price())
+                            .price(dto.getItems().get(0).getVariants().get(0).getPrice())
+                            .quantity_total(dto.getItems().get(0).getVariants().get(0).getQuantity_total())
                             .build();
 
-                    product.setVariants(variants);
-                    product.setId(e.getProduct_id());
-                    product.setMsrp(e.getList_price());
+            //racquets1.setProduct(product);
 
-                    e.getVariants().stream()
-                            .forEach(f -> {
-                                Racquets racquets = new Racquets.RacquetBuilder()
-                                        .racquet_id(f.getVariant_id())
-                                        .price(f.getPrice())
-                                        .list_price(f.getList_price())
-                                        .quantity_total(f.getQuantity_total())
-                                        .link(f.getLink())
-                                        .build();
+            Racquets racquets2 = new Racquets.RacquetBuilder()
+                    .racquet_id(dto.getItems().get(0).getVariants().get(1).getVariant_id())
+                            .list_price(dto.getItems().get(0).getVariants().get(1).getList_price())
+                            .price(dto.getItems().get(0).getVariants().get(1).getPrice())
+                            .quantity_total(dto.getItems().get(0).getVariants().get(1).getQuantity_total())
+                            .build();
 
-                                Racquets.Options options = new Racquets.Options();
-                                options.setSize(f.getOptions().getSize());
-                                racquets.setOptions(options);
+            //racquets2.setProduct(product);
 
-                                variants.add(racquets);
-                            });
 
-                    products.add(product);
 
-                }
-            }
-        });
 
-        holabirdRepository.saveAll(products);
+//        List<Product<T>> products = new ArrayList<>();
+//
+//        dto.getItems().stream().forEach(e -> {
+//
+//            switch (dto.getType()) {
+//                case RACQUETS -> {
+//                    List<HolabirdVariants> variants = new ArrayList<>();
+//
+//                    Product<HolabirdVariants> product = new Racquets();
+//                    //product.setVariants(variants);
+//                    product.setQuantity_total(e.getQuantity_total());
+//                    product.setId(e.getProduct_id());
+//                    product.setMsrp(e.getList_price());
+//                    product.setTitle(e.getTitle());
+//                    product.setProductType(dto.getType());
+//                    product.setRetailer(Retailer.HOLABIRD);
+//                    product.setPrice(e.getPrice());
+//                    product.setDiscount(e.getDiscount());
+//                    product.setBrand(Brand.getBrandName(e.getVendor()));
+//
+//                    e.getVariants().stream()
+//                            .forEach(f -> {
+//                                HolabirdVariants racquets = new HolabirdVariants.HolabirdVariantsBuilder()
+//                                        .setRacquet_id(f.getVariant_id())
+//                                        .setPrice(f.getPrice())
+//                                        .setList_price(f.getList_price())
+//                                        .setQuantity_total(f.getQuantity_total())
+//                                        .setLink(f.getLink())
+//                                        .build();
+//
+//                                variants.add(racquets);
+//
+//                                HolabirdVariants.Options options = new HolabirdVariants.Options.OptionsBuilder()
+//                                        .setSize(f.getOptions().getSize())
+//                                                .build();
+//
+//                                racquets.setOptions(options);
+//
+//
+//                            });
+//
+//                    products.add((Product<T>) product);
+//
+//                }
+//            }
+//        });
+
+        holabirdRepository.save(product);
+        //holabirdRepository.save(racquets1);
+        //holabirdRepository.save(racquets2);
+
+        //List<Product> list = holabirdRepository.findAllById(Collections.singleton("1323317330014"));
 
         List<Product> list = holabirdRepository.findAll();
 

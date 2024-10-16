@@ -1,0 +1,309 @@
+package com.xyz.tennistrack.repository;
+
+import com.xyz.tennistrack.dto.HolabirdDTO;
+import com.xyz.tennistrack.model.Product;
+import com.xyz.tennistrack.model.enums.Brand;
+import com.xyz.tennistrack.model.enums.ProductType;
+import com.xyz.tennistrack.model.enums.Retailer;
+import com.xyz.tennistrack.model.tennisProducts.Racquets;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@DataJpaTest
+@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+public class ProductRepositoryTest {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private RacquetRepository racquetsRepository;
+
+    private static HolabirdDTO dto;
+
+    @BeforeAll
+    public static void setUp() {
+        //create the dto
+        dto = new HolabirdDTO();
+
+        dto.setType(ProductType.RACQUETS);
+        dto.setTotalItems(360);
+        dto.setStartIndex(0);
+        dto.setItemsPerPage(250);
+        dto.setCurrentItemCount(250);
+
+        List<HolabirdDTO.Items> items = new ArrayList<>();
+        dto.setItems(items);
+
+        HolabirdDTO.Items item1 = new HolabirdDTO.Items();
+        HolabirdDTO.Items item2 = new HolabirdDTO.Items();
+        HolabirdDTO.Items item3 = new HolabirdDTO.Items();
+
+        //item 1
+        item1.setProduct_id("1323317330014");
+        item1.setTitle("HEAD Ti. S6");
+        item1.setDescription("");
+        item1.setLink("\\/products\\/head-ti-s6");
+        item1.setPrice("99.0000");
+        item1.setList_price("325.0000");
+        item1.setQuantity("1");
+        item1.setProduct_code("100096   2L");
+        item1.setImage_link("https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/2006\\/8755\\/products\\/100096_1_large.jpg?v=1596473380");
+        item1.setVendor("Head");
+        item1.setDiscount("70");
+        item1.setAdd_to_cart_id("12221276815454");
+        item1.setTotal_reviews("30");
+        item1.setReviews_average_score("4.6");
+
+        List<HolabirdDTO.Variants> variants = new ArrayList<>();
+
+        //variant 1
+        HolabirdDTO.Variants variant1 = new HolabirdDTO.Variants();
+        variant1.setVariant_id("12221276815454");
+        variant1.setSku("100096   2L");
+        variant1.setBarcode("726423947943");
+        variant1.setPrice("99.0000");
+        variant1.setList_price("325.0000");
+        variant1.setTaxable("1");
+        variant1.setAvailable("1");
+        variant1.setQuantity_total("5");
+        variant1.setLink("\\/products\\/head-ti-s6?variant=12221276815454");
+
+        HolabirdDTO.Variants.Options options = new HolabirdDTO.Variants.Options();
+        options.setSize("2L - 4 1\\/4\\");
+        variant1.setOptions(options);
+
+        //variant 2
+        HolabirdDTO.Variants variant2 = new HolabirdDTO.Variants();
+        variant2.setVariant_id("12221276848222");
+        variant2.setSku("100096   3L");
+        variant2.setBarcode("726423947950");
+        variant2.setPrice("99.0000");
+        variant2.setList_price("325.0000");
+        variant2.setTaxable("1");
+        variant2.setAvailable("1");
+        variant2.setQuantity_total("6");
+        variant2.setLink("\\/products\\/head-ti-s6?variant=12221276848222");
+
+        HolabirdDTO.Variants.Options options2 = new HolabirdDTO.Variants.Options();
+        options2.setSize("3L - 4 3\\/8\\");
+        variant2.setOptions(options);
+
+        variants.add(variant1);
+        variants.add(variant2);
+
+
+        //item 2
+        item2.setProduct_id("1323318116446");
+        item2.setTitle("Wilson Hyper Hammer 5.3 Stretch Oversize");
+        item2.setDescription("");
+        item2.setLink("\\/products\\/wilson-hyper-hammer-5-3-stretch-over");
+        item2.setPrice("199.0000");
+        item2.setList_price("199.9900");
+        item2.setQuantity("1");
+        item2.setProduct_code("100241   1L");
+        item2.setImage_link("\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/2006\\/8755\\/products\\/100241_1_large.jpg?v=1596733522");
+        item2.setVendor("Wilson");
+        item2.setDiscount("40");
+        item2.setAdd_to_cart_id("15391879463006");
+        item2.setTotal_reviews("28");
+        item2.setReviews_average_score("4.3");
+
+        List<HolabirdDTO.Variants> variants2 = new ArrayList<>();
+
+        HolabirdDTO.Variants variant3 = new HolabirdDTO.Variants();
+        variant3.setVariant_id("12221276815454");
+        variant3.setSku("100096   2L");
+        variant3.setBarcode("726423947943");
+        variant3.setPrice("99.0000");
+        variant3.setList_price("325.0000");
+        variant3.setTaxable("1");
+        variant3.setAvailable("1");
+        variant3.setQuantity_total("5");
+        variant3.setLink("\\/products\\/wilson?variant=122212768214122");
+
+        HolabirdDTO.Variants.Options options3 = new HolabirdDTO.Variants.Options();
+        options3.setSize("2L - 4 1\\/4\\");
+        variant3.setOptions(options3);
+
+
+        HolabirdDTO.Variants variant4 = new HolabirdDTO.Variants();
+        variant4.setVariant_id("12221276848222");
+        variant4.setSku("100096   3L");
+        variant4.setBarcode("726423947950");
+        variant4.setPrice("99.0000");
+        variant4.setList_price("325.0000");
+        variant4.setTaxable("1");
+        variant4.setAvailable("1");
+        variant4.setQuantity_total("6");
+        variant4.setLink("\\/products\\/wilson?variant=122212768482342");
+
+        HolabirdDTO.Variants.Options options4 = new HolabirdDTO.Variants.Options();
+        options4.setSize("3L - 4 3\\/8\\");
+        variant4.setOptions(options4);
+
+        //add list of variant options to the variants array
+        variants2.add(variant3);
+        variants2.add(variant4);
+
+        //add the variants array to the item dto
+        item1.setVariants(variants);
+        item2.setVariants(variants2);
+
+        //add the item dto to the list of items
+        items.add(item1);
+        items.add(item2);
+
+
+    }
+
+    @Test
+    public void testProductRepository_SaveProductWithoutList() {
+
+        Product product = new Racquets();
+        product.setId(dto.getItems().get(0).getProduct_id());
+        product.setRetailer(Retailer.HOLABIRD);
+        product.setTitle(dto.getItems().get(0).getTitle());
+        product.setProductType(ProductType.RACQUETS);
+        product.setPrice(dto.getItems().get(0).getPrice());
+        product.setMsrp(dto.getItems().get(0).getList_price());;
+        product.setDiscount(dto.getItems().get(0).getDiscount());
+        product.setBrand(Brand.getBrandName(dto.getItems().get(0).getVendor()));
+
+
+//        List<Product<T>> products = new ArrayList<>();
+//
+//        dto.getItems().stream().forEach(e -> {
+//
+//            switch (dto.getType()) {
+//                case RACQUETS -> {
+//                    List<HolabirdVariants> variants = new ArrayList<>();
+//
+//                    Product<HolabirdVariants> product = new Racquets();
+//                    //product.setVariants(variants);
+//                    product.setQuantity_total(e.getQuantity_total());
+//                    product.setId(e.getProduct_id());
+//                    product.setMsrp(e.getList_price());
+//                    product.setTitle(e.getTitle());
+//                    product.setProductType(dto.getType());
+//                    product.setRetailer(Retailer.HOLABIRD);
+//                    product.setPrice(e.getPrice());
+//                    product.setDiscount(e.getDiscount());
+//                    product.setBrand(Brand.getBrandName(e.getVendor()));
+//
+//                    e.getVariants().stream()
+//                            .forEach(f -> {
+//                                HolabirdVariants racquets = new HolabirdVariants.HolabirdVariantsBuilder()
+//                                        .setRacquet_id(f.getVariant_id())
+//                                        .setPrice(f.getPrice())
+//                                        .setList_price(f.getList_price())
+//                                        .setQuantity_total(f.getQuantity_total())
+//                                        .setLink(f.getLink())
+//                                        .build();
+//
+//                                variants.add(racquets);
+//
+//                                HolabirdVariants.Options options = new HolabirdVariants.Options.OptionsBuilder()
+//                                        .setSize(f.getOptions().getSize())
+//                                                .build();
+//
+//                                racquets.setOptions(options);
+//
+//
+//                            });
+//
+//                    products.add((Product<T>) product);
+//
+//                }
+//            }
+//        });
+
+        productRepository.save(product);
+        List<Product> list = productRepository.findAll();
+
+        Assertions.assertThat(list).isNotNull();
+        Assertions.assertThat(list.size()).isGreaterThan(0);
+
+    }
+
+    @Test
+    public void testProductRepository_SaveProductWithList() {
+        Product product = new Racquets();
+        product.setId(dto.getItems().get(0).getProduct_id());
+        product.setRetailer(Retailer.HOLABIRD);
+        product.setTitle(dto.getItems().get(0).getTitle());
+        product.setProductType(ProductType.RACQUETS);
+        product.setPrice(dto.getItems().get(0).getPrice());
+        product.setMsrp(dto.getItems().get(0).getList_price());;
+        product.setDiscount(dto.getItems().get(0).getDiscount());
+        product.setBrand(Brand.getBrandName(dto.getItems().get(0).getVendor()));
+
+
+        Racquets racquets1 = new Racquets.RacquetBuilder()
+                .racquet_id(dto.getItems().get(0).getVariants().get(0).getVariant_id())
+                .list_price(dto.getItems().get(0).getVariants().get(0).getList_price())
+                .price(dto.getItems().get(0).getVariants().get(0).getPrice())
+                .quantity_total(dto.getItems().get(0).getVariants().get(0).getQuantity_total())
+                .build();
+        racquets1.setId(dto.getItems().get(0).getVariants().get(0).getVariant_id());
+
+        Racquets racquets2 = new Racquets.RacquetBuilder()
+                .racquet_id(dto.getItems().get(0).getVariants().get(1).getVariant_id())
+                .list_price(dto.getItems().get(0).getVariants().get(1).getList_price())
+                .price(dto.getItems().get(0).getVariants().get(1).getPrice())
+                .quantity_total(dto.getItems().get(0).getVariants().get(1).getQuantity_total())
+                .build();
+        racquets2.setId(dto.getItems().get(0).getVariants().get(1).getVariant_id());
+
+        List<Racquets> racquets = new ArrayList<>(List.of(racquets1, racquets2));
+        product.setRacquets(racquets);
+
+        productRepository.save(product);
+
+        List<Product> list = productRepository.findAll();
+        List<Racquets> racquetsList = list.get(0).getRacquets();
+
+        Assertions.assertThat(list).isNotNull();
+        Assertions.assertThat(racquetsList).isNotNull();
+        Assertions.assertThat(racquetsList.size()).isGreaterThan(1);
+    }
+
+
+    @Test
+    public void testRacquetRepository_Save() {
+
+        Racquets racquets1 = new Racquets.RacquetBuilder()
+                .racquet_id(dto.getItems().get(0).getVariants().get(0).getVariant_id())
+                .list_price(dto.getItems().get(0).getVariants().get(0).getList_price())
+                .price(dto.getItems().get(0).getVariants().get(0).getPrice())
+                .quantity_total(dto.getItems().get(0).getVariants().get(0).getQuantity_total())
+                .build();
+
+        racquets1.setId(dto.getItems().get(0).getProduct_id());
+
+        Racquets racquets2 = new Racquets.RacquetBuilder()
+                .racquet_id(dto.getItems().get(0).getVariants().get(1).getVariant_id())
+                .list_price(dto.getItems().get(0).getVariants().get(1).getList_price())
+                .price(dto.getItems().get(0).getVariants().get(1).getPrice())
+                .quantity_total(dto.getItems().get(0).getVariants().get(1).getQuantity_total())
+                .build();
+        racquets2.setId(dto.getItems().get(0).getProduct_id());
+
+        racquetsRepository.save(racquets1);
+        racquetsRepository.save(racquets2);
+
+        List<Racquets> racquets = racquetsRepository.findAll();
+
+        Assertions.assertThat(racquets).isNotNull();
+        Assertions.assertThat(racquets.size()).isGreaterThan(0);
+    }
+
+}

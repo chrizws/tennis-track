@@ -2,8 +2,12 @@ package com.xyz.tennistrack.service.impl;
 
 import com.xyz.tennistrack.config.UserAgents;
 import com.xyz.tennistrack.dto.HolabirdDTO;
+import com.xyz.tennistrack.model.Product;
+import com.xyz.tennistrack.model.enums.Brand;
 import com.xyz.tennistrack.model.enums.ProductType;
-import com.xyz.tennistrack.repository.ProductRepository;
+import com.xyz.tennistrack.model.enums.Retailer;
+import com.xyz.tennistrack.model.tennisProducts.Racquets;
+import com.xyz.tennistrack.repository.HolabirdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -16,16 +20,16 @@ import java.util.*;
 public class HolabirdServiceImpl {
 
     private final RestTemplate rt;
-    private final ProductRepository productRepository;
+    private final HolabirdRepository holabirdRepository;
 
     @Value("${holabird.url}")
     private String url;
     private Map<ProductType, String> productTypes;
 
     @Autowired
-    public HolabirdServiceImpl(RestTemplate rt, ProductRepository productRepository) {
+    public HolabirdServiceImpl(RestTemplate rt, HolabirdRepository holabirdRepository) {
         this.rt = rt;
-        this.productRepository = productRepository;
+        this.holabirdRepository = holabirdRepository;
 
         //create a map of product types with associated categories
         productTypes = initProductTypes();

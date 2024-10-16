@@ -1,10 +1,9 @@
 package com.xyz.tennistrack.service;
 
 import com.xyz.tennistrack.dto.HolabirdDTO;
-import com.xyz.tennistrack.repository.HolabirdRepository;
+import com.xyz.tennistrack.repository.ProductRepository;
 import com.xyz.tennistrack.service.impl.HolabirdServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,7 @@ import java.util.List;
 public class HolabirdServiceImplTest {
 
     @Mock
-    private HolabirdRepository holabirdRepository;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private HolabirdServiceImpl holabirdServiceImpl;
