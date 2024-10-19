@@ -33,7 +33,7 @@ public class ProductRepositoryTest {
     private static HolabirdDTO dto;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setup() {
         //create the dto
         dto = new HolabirdDTO();
 
@@ -126,7 +126,7 @@ public class ProductRepositoryTest {
         variant3.setSku("100096   2L");
         variant3.setBarcode("726423947943");
         variant3.setPrice("99.0000");
-        variant3.setList_price("325.0000");
+        variant3.setList_price("199.0000");
         variant3.setTaxable("1");
         variant3.setAvailable("1");
         variant3.setQuantity_total("5");

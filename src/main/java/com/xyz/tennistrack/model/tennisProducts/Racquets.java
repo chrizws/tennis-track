@@ -26,8 +26,8 @@ public class Racquets {
     private String list_price;
     private String quantity_total;
     private String link;
-//    private String sku;
-//    private String barcode;
+    private String sku;
+    private String barcode;
 
     @Embedded
     private Options options;
@@ -37,6 +37,9 @@ public class Racquets {
 //    private Product product;
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Options {
         private String size;
     }

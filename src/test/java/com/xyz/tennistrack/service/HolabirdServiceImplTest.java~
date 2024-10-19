@@ -319,7 +319,7 @@ public class HolabirdServiceImplTest {
                 .thenReturn(null);
         response = holabirdServiceImpl.getProductsByTypeAndRetailer("Racquets", "Holabird");
 
-        Assertions.assertThat(response.getBody()).isEqualTo("Holabird Racquets not found");
+        Assertions.assertThat(response.getBody()).isEqualTo("Racquets Holabird not found");
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
 
 

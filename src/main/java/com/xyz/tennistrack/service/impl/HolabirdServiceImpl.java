@@ -23,6 +23,7 @@ public class HolabirdServiceImpl {
     private final RestTemplate rt;
     private final ProductRepository productRepository;
     private final RacquetRepository racquetRepository;
+    private List<Product> products;
 
     @Value("${holabird.url}")
     private String url;
@@ -33,9 +34,6 @@ public class HolabirdServiceImpl {
         this.rt = rt;
         this.productRepository = productRepository;
         this.racquetRepository = racquetRepository;
-
-        //create a map of product types with associated categories
-        productTypes = initProductTypes();
     }
 
     //initialize the product types into a map
@@ -96,38 +94,64 @@ public class HolabirdServiceImpl {
         return createParamUrl;
     }
 
-    //consume API to retrieve DTO
-    public <T> HolabirdDTO getHolaBirdDTO() {
+
+
+    public List<Product> callAllProducts() {
+        //initialize productTypes with all the types of products
+        productTypes = initProductTypes();
+
+        products = new ArrayList<>();
 
         for (ProductType type : productTypes.keySet()) {
 
             //build the custom url with the query parameters
             String completeUrl = createUrlWithParams(getRequestParams(type, 0));
 
-            //ResponseEntity<String> response = rt.exchange(url, HttpMethod.GET, getHeaders(), String.class);
             //ParameterizedTypeReference<HolabirdDTO<Racquets>> responseType = new ParameterizedTypeReference<>() {};
             //ResponseEntity<HolabirdDTO<Racquets>> response = rt.exchange(url, HttpMethod.GET, getHeaders(), responseType);
             HolabirdDTO holabirdDTO = rt.exchange(completeUrl, HttpMethod.GET, getHeaders(), HolabirdDTO.class).getBody();
             holabirdDTO.setType(type);
 
+            //create entities from dto for persistence
+            List<Product> productEntities = createEntityFromDto(holabirdDTO);
 
-            //create the data entity for persistence
-            List<Product> products = createDataEntity(holabirdDTO);
-            saveAllProducts(products);
-
-            return holabirdDTO;
+            products.addAll(productEntities);
         }
 
-        return null;
-
-    }
-
-    private <T> void saveAllProducts(List<Product> products) {
-        productRepository.saveAll(products);
+        return products;
     }
 
 
-    public <T> List<Product> createDataEntity(HolabirdDTO holabirdDTO) {
+    public ResponseEntity<?> getProductsByTypeAndRetailer(String type, String name) {
+
+        ProductType productType = ProductType.getProductType(type);
+        Retailer retailer = Retailer.getRetailer(name);
+        List<Product> products = productRepository.findProductsByProductTypeAndRetailer(productType, retailer);
+
+        if (products != null)
+            return ResponseEntity.status(HttpStatus.OK).body(products);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(name + " " + type + " not found");
+    }
+
+    public ResponseEntity<?> getAllRacquets() {
+
+        //temporarily use racquets in place of all products
+        List<Product> products = productRepository.findProductsByProductType(ProductType.RACQUETS);
+
+        //List<Racquets> products = productRepository.findAll();
+        if (products != null)
+            return ResponseEntity.status(HttpStatus.OK).body(products);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("No Products Found");
+    }
+
+    private boolean saveAllProducts(List<Product> products) {
+        return productRepository.saveAll(products).size() == products.size();
+    }
+
+
+    private <T> List<Product> createEntityFromDto(HolabirdDTO holabirdDTO) {
         List<Product> products = new ArrayList<>();
 
         holabirdDTO.getItems()
@@ -138,14 +162,12 @@ public class HolabirdServiceImpl {
 
                     List<T> variants = new ArrayList<>();
 
-                    e.getVariants().forEach(f -> {
+                    e.getVariants().forEach(variant -> {
 
-                        variants.add(createVariantEntity(product, f, holabirdDTO.getType()));
+                        variants.add(createVariantEntity(variant, holabirdDTO.getType()));
 
                         switch (holabirdDTO.getType()) {
-                            case RACQUETS -> {
-                                product.setRacquets((List<Racquets>) variants);
-                            }
+                            case RACQUETS -> product.setRacquets((List<Racquets>) variants);
                         }
                     });
                 });
@@ -170,7 +192,7 @@ public class HolabirdServiceImpl {
     }
 
 
-    private <T> T createVariantEntity(Product product, HolabirdDTO.Variants e, ProductType type) {
+    private <T> T createVariantEntity(HolabirdDTO.Variants e, ProductType type) {
 
         switch (type) {
             case RACQUETS -> {

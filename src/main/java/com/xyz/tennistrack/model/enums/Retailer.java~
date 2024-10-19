@@ -36,6 +36,7 @@ public enum Retailer {
 
     public static Retailer getRetailer(String name) {
         for (Retailer r : Retailer.values()) {
+
             if (r.names.stream().anyMatch(e -> e.equalsIgnoreCase(name)))
                 return r;
         }

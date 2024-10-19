@@ -1,5 +1,7 @@
 package com.xyz.tennistrack.model.enums;
 
+import java.util.Arrays;
+
 public enum ProductType {
     RACQUETS("Racquets", "Rackets", "Racquet", "Racquet"),
     SHOES("Shoes", "Shoe"),
@@ -10,13 +12,23 @@ public enum ProductType {
     STRINGS("Strings", "String"),
     ACCESSORIES("Accessories", "Accessory");
 
-    private String[] names;
+    private final String[] names;
+
     ProductType (String... names) {
         this.names = names;
     }
 
     public String[] getNames() {
         return names;
+    }
+
+    public static ProductType getProductType(String name) {
+        for (ProductType type : values()) {
+            String found = Arrays.stream(type.names).filter(e -> e.equalsIgnoreCase(name)).findFirst().get();
+            if (!found.isEmpty())
+                return type;
+        }
+        return null;
     }
 
     public static boolean hasCategoryName(String name) {
