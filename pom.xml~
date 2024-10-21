@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.xyz</groupId>
-	<artifactId>bkp</artifactId>
+	<artifactId>TennisTrack</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>TennisTrack</name>
 	<description>TennisTrack</description>

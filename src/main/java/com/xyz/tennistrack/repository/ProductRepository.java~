@@ -18,6 +18,6 @@ public interface ProductRepository<T extends Product> extends JpaRepository<T, S
 
     //List<Product> findProductsByRetailer(Retailer retailer);
 
-    //List<T> saveAll(List<T> products);
+    List<T> saveAll(List<T> products);
 
 }

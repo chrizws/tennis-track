@@ -1,5 +1,10 @@
 package com.xyz.tennistrack.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum Brand {
 
     ADIDAS("Adidas"),
@@ -22,6 +27,7 @@ public enum Brand {
     NIKE("Nike"),
     NEW_BALANCE("New Balance"),
     PRINCE("Prince"),
+    PROKENNEX("Pro Kennex"),
     SOLINCO("Solinco"),
     TECNIFIBRE("Tecnifibre"),
     TOURNA("Tourna"),
@@ -30,21 +36,25 @@ public enum Brand {
     WILSON("Wilson"),
     YONEX("Yonex");
 
-    private String name;
+    private final String name;
+    private static final Map<String, Brand> BY_NAME = new HashMap<>();
 
+    static {
+        for (Brand brand : values()) {
+            BY_NAME.put(brand.name.toLowerCase(), brand);
+        }
+    }
     Brand(String name) {
         this.name = name;
     }
 
+    @JsonValue
     public String getName() {
         return name;
     }
 
-    public static Brand getBrandName(String name) {
-        for (Brand brand : Brand.values()) {
-            if (brand.name.equalsIgnoreCase(name))
-                return brand;
-        }
-        return null;
+    public static Brand getBrandByName(String name) {
+        return BY_NAME.get(name.toLowerCase());
+
     }
 }

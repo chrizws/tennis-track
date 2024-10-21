@@ -1,0 +1,39 @@
+package com.xyz.tennistrack.model.Entity;
+
+import com.xyz.tennistrack.dto.retailerDto.HolabirdDTO;
+import com.xyz.tennistrack.model.enums.Brand;
+import com.xyz.tennistrack.model.enums.ProductType;
+import com.xyz.tennistrack.model.enums.Retailer;
+
+import java.util.*;
+
+public class EntityMapper {
+
+    public static <T extends Product> T createProduct(HolabirdDTO.Items item, ProductType productType) {
+
+        switch (productType) {
+            case RACQUETS -> {
+                Racquets racquets = new Racquets();
+                racquets.setRacquet_id(item.getProduct_id());
+                racquets.setList_price(item.getList_price());
+                racquets.setQuantity_total(item.getQuantity_total());
+                racquets.setTitle(item.getTitle());
+                racquets.setPrice(item.getPrice());
+                racquets.setDiscount(item.getDiscount());
+                racquets.setBrand(Brand.getBrandByName(item.getVendor()));
+                racquets.setMsrp(item.getList_price());
+                racquets.setProductType(productType);
+                racquets.setRetailer(Retailer.HOLABIRD);
+
+                racquets.setOptions(Racquets.Options.builder()
+                        .size(item.getVariants().get)
+                        .color(item.getColor())
+                        .build());
+                return racquets;
+            }
+        }
+
+        return null;
+    }
+
+}

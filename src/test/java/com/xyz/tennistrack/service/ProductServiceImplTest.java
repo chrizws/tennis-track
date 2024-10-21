@@ -2,19 +2,18 @@ package com.xyz.tennistrack.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.xyz.tennistrack.TestJson;
-import com.xyz.tennistrack.customSerializer.EmptyStringAsDoubleDeserializer;
-import com.xyz.tennistrack.customSerializer.EmptyStringAsIntegerDeserializer;
+import com.xyz.tennistrack.dto.productDto.ProductDto;
 import com.xyz.tennistrack.dto.retailerDto.HolabirdDTO;
 import com.xyz.tennistrack.model.Entity.Product;
+import com.xyz.tennistrack.model.Entity.Racquets;
 import com.xyz.tennistrack.model.enums.Brand;
 import com.xyz.tennistrack.model.enums.ProductType;
 import com.xyz.tennistrack.model.enums.Retailer;
-import com.xyz.tennistrack.model.Entity.Racquets;
 import com.xyz.tennistrack.repository.ProductRepository;
 import com.xyz.tennistrack.repository.RacquetRepository;
 import com.xyz.tennistrack.service.impl.HolabirdServiceImpl;
+import com.xyz.tennistrack.service.impl.ProductServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,35 +22,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class HolabirdServiceImplTest {
+public class ProductServiceImplTest {
 
     @Mock
     private ProductRepository productRepositoryMock;
 
-    @Mock
-    private RestTemplate rtMock;
-
-    @Mock
-    private RacquetRepository racquetRepositoryMock;
-
     @InjectMocks
-    private HolabirdServiceImpl holabirdServiceImpl;
+    private ProductServiceImpl productServiceImpl;
 
-    private static HolabirdDTO dto;
     private static List<Product> products;
 
     @BeforeAll
-    public static void initProducts() {
-
+    public static void initEntity() {
         //create the products
         products = new ArrayList<>();
 
@@ -92,54 +82,25 @@ public class HolabirdServiceImplTest {
 
         products.add(p);
         products.add(p2);
-
     }
-    @BeforeAll
-    public static void initDto() throws JsonProcessingException {
-        SimpleModule mod = new SimpleModule();
-        mod.addDeserializer(Integer.class, new EmptyStringAsIntegerDeserializer());
-        mod.addDeserializer(Double.class, new EmptyStringAsDoubleDeserializer());
+    @Test
+    void testGetProductsByType() throws JsonProcessingException {
 
-        dto = new ObjectMapper()
-                .registerModule(mod)
+        HolabirdDTO dto = new ObjectMapper()
                 .readerFor(HolabirdDTO.class)
                 .readValue(TestJson.json);
-    }
 
-    @Test
-    public void testHolabirdServiceImpl_getAllProducts() {
+        when(productRepositoryMock.findAll())
+                .thenReturn(products);
 
-       when(rtMock.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(HttpEntity.class), Mockito.eq(HolabirdDTO.class)))
-                .thenReturn(ResponseEntity.ok(dto));
+        ResponseEntity<ProductDto> response = productServiceImpl.getProductsByType("Racquet");
 
-       when(productRepositoryMock.saveAll(Mockito.anyList())).thenReturn(products);
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getBody().getTotalItems()).isEqualTo(2);
+        Assertions.assertThat(response.getBody().getProduct().get(0).getDiscount()).isEqualTo("70");
 
-       int productsSaved = holabirdServiceImpl.getAllProducts();
-
-        Assertions.assertThat(productsSaved).isEqualTo(2);
 
     }
-
-//    @Test
-//    public void testHolabirdServiceImpl_toProductEntityFromHolabirdDto() {
-//
-//        List<Product> products = holabirdServiceImpl.toProductEntityFromHolabirdDto(dto);
-//        Assertions.assertThat(products).isNotNull();
-//        Assertions.assertThat(products.size()).isEqualTo(4);
-//    }
-
-//    @Test
-//    public void testHolabirdServiceImpl_createEntityFromDto() {
-//
-//        dto.setType(ProductType.RACQUETS);
-//
-//        List<Product> products = holabirdServiceImpl.toProductEntityFromHolabirdDto(dto);
-//        Assertions.assertThat(products).isNotNull();
-//        Assertions.assertThat(products.size()).isEqualTo(2);
-//
-//        //Assertions.assertThat(products.get(0).getRacquets().size()).isEqualTo(2);
-//
-//    }
 
 
 

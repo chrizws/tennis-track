@@ -1,6 +1,9 @@
 package com.xyz.tennistrack.model.enums;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public enum ProductType {
     RACQUETS("Racquets", "Rackets", "Racquet", "Racquet"),
@@ -12,42 +15,27 @@ public enum ProductType {
     STRINGS("Strings", "String"),
     ACCESSORIES("Accessories", "Accessory");
 
-    private final String[] names;
+    private final List<String> names;
+    private static final Map<String, ProductType> BY_NAMES = new HashMap<>();
 
-    ProductType (String... names) {
-        this.names = names;
+    static {
+        for (ProductType type : values()) {
+            for (String name : type.getNames()) {
+                BY_NAMES.put(name.toLowerCase(), type);
+            }
+        }
     }
 
-    public String[] getNames() {
+    ProductType (String... names) {
+        this.names = Arrays.asList(names);
+    }
+
+    public List<String> getNames() {
         return names;
     }
 
-    public static ProductType getProductType(String name) {
-        for (ProductType type : values()) {
-            String found = Arrays.stream(type.names).filter(e -> e.equalsIgnoreCase(name)).findFirst().get();
-            if (!found.isEmpty())
-                return type;
-        }
-        return null;
-    }
-
-    public static boolean hasCategoryName(String name) {
-        for (ProductType cat : values()) {
-            for (String n : cat.getNames()) {
-                if (name.toLowerCase().contains(n.toLowerCase()))
-                    return true;
-            }
-
-        }
-        return false;
-    }
-
-    public boolean hasName(String name) {
-        for (String s : getNames()) {
-            if (name.toLowerCase().contains(s.toLowerCase()))
-                return true;
-        }
-        return false;
+    public static ProductType getProductTypeByName(String name) {
+        return BY_NAMES.get(name.toLowerCase());
     }
 
     public String getName() {

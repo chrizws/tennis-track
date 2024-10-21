@@ -1,20 +1,20 @@
 package com.xyz.tennistrack.service;
 
-import com.xyz.tennistrack.dto.RetailerDTO;
-import com.xyz.tennistrack.model.Product;
+import com.xyz.tennistrack.dto.productDto.ProductDto;
+import com.xyz.tennistrack.dto.retailerDto.RetailerDTO;
 import com.xyz.tennistrack.model.enums.Brand;
 import com.xyz.tennistrack.model.enums.ProductType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface ProductService<T extends RetailerDTO> {
+public interface ProductService {
 
-    List<T> getAllProducts();
 
-    List<T> getProductsByType(ProductType type);
+    <T> ResponseEntity<ProductDto> getProductsByType(String type);
 
-    List<T> getProductsByBrand(Brand brand);
+    <T> ResponseEntity<ProductDto> getProductsByBrand(String brand);
 
-    RetailerDTO addProduct(RetailerDTO product);
+    <T> ResponseEntity<ProductDto> getProductsByRetailer(String retailer);
 
 }

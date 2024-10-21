@@ -42,7 +42,7 @@ public class MainController {
         return (ResponseEntity<?>) productService.getProductsByRetailer(retailer);
     }
 
-    @GetMapping("/type/{type}")
+    @GetMapping("/{type}")
     public ResponseEntity<?> getProductsByType(@PathVariable String type) {
 
         return productService.getProductsByType(type);

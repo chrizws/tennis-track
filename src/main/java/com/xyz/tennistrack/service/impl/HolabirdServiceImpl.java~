@@ -186,10 +186,9 @@ public class HolabirdServiceImpl {
 
 
     //TODO
-    //fetching is capped at 250 products (not including variants) - need to iterate calls
+    //fetching is capped at 250 products (not including variants)
     //implement pagination
-    //work on racquets data
-    //currently only ProductDto fields are returned - missing RacquetsDto
+    //work on racquets data only
 
     //findAll
     //findByType

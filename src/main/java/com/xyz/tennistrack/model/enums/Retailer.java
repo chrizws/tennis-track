@@ -1,8 +1,8 @@
 package com.xyz.tennistrack.model.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.*;
 
 public enum Retailer {
 
@@ -20,27 +20,33 @@ public enum Retailer {
     PGA_TOUR("PGA Tour Superstore", "PGA"),
     TENNISZON("TennisZon", "TZ");
 
-    private String name;
-    private String abbrev;
-    private List<String> names = new ArrayList<>();
+    private final String name;
+    private final String abbrev;
+
+    private static final Map<String, Retailer> BY_RETAILER_NAME = new HashMap<>();
+    private static final Map<String, Retailer> BY_RETAILER_ABBREV = new HashMap<>();
+
+    static {
+        for (Retailer retailer : values()) {
+            BY_RETAILER_NAME.put(retailer.name.toLowerCase(), retailer);
+            BY_RETAILER_ABBREV.put(retailer.abbrev.toLowerCase(), retailer);
+        }
+    }
 
     Retailer(String name, String abbrev) {
         this.name = name;
         this.abbrev = abbrev;
-        names.addAll(List.of(name, abbrev));
     }
 
-    public List<String> getNames() {
-        return names;
+    public static Retailer getRetailerByName(String name) {
+        return BY_RETAILER_NAME.get(name.toLowerCase());
     }
 
-    public static Retailer getRetailer(String name) {
-        for (Retailer r : Retailer.values()) {
-            if (r.names.stream().anyMatch(e -> e.equalsIgnoreCase(name)))
-                return r;
-        }
-        return null;
+    public static Retailer getRetailerByAbbrev(String abbrev) {
+        return BY_RETAILER_ABBREV.get(abbrev.toLowerCase());
     }
+
+    @JsonValue
     public String getName() {
         return name;
     }
